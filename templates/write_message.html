@@ -1,0 +1,131 @@
+{% extends 'base_content.html' %}
+{% load static %}
+{% block top-css %}
+     <script src="{% static 'tiny_mce/tiny_mce.js' %}"></script>
+<script>
+    tinyMCE.init({
+        //tinymce高级配置，不然会显得很low
+        'mode': 'textareas',
+        'theme': "advanced",
+        'plugins': "pagebreak,style,layer,table,save,advhr,advimage,advlink,emotions,iespell,inlinepopups,insertdatetime,preview,media,searchreplace,print,contextmenu,paste,directionality,fullscreen,noneditable,visualchars,nonbreaking,xhtmlxtras,template,wordcount,advlist,autosave",
+        'theme_advanced_buttons1': "save,newdocument,|,bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,styleselect,formatselect,fontselect,fontsizeselect,fullscreen,code",
+        'theme_advanced_buttons2': "cut,copy,paste,pastetext,|,search,replace,|,bullist,numlist,|,outdent,indent,blockquote,|,undo,redo,|,link,unlink,anchor,image,cleanup,|,insertdate,inserttime,preview,|,forecolor,backcolor",
+        'theme_advanced_buttons3': "tablecontrols,|,hr,removeformat,visualaid,|,sub,sup,|,charmap,emotions,iespell,media,advhr,|,print,|,ltr,rtl",
+        'theme_advanced_toolbar_location': "top",
+        'theme_advanced_toolbar_align': "left",
+        'theme_advanced_statusbar_location': "bottom",
+        'theme_advanced_resizing': 'true',
+        'template_external_list_url': "lists/template_list.js",
+        'external_link_list_url': "lists/link_list.js",
+        'external_image_list_url': "lists/image_list.js",
+        'media_external_list_url': "lists/media_list.js",
+        'style_formats': [
+        {'title': 'Bold text', 'inline': 'strong'},
+        {'title': 'Red text', 'inline': 'span', 'styles': {'color': '#ff0000'}},
+        {'title': 'Help', 'inline': 'strong', 'classes': 'help'},
+        {'title': 'Table styles'},
+        {'title': 'Table row 1', 'selector': 'tr', 'classes': 'tablerow'}
+        ],
+        'width': '700',
+        'height': '600'
+    })
+</script>
+{% endblock top-css %}
+{% block body-content %}
+<section >
+    <div class="container-fluid">
+        <div class="row ">
+            <!--左侧导航开始-->
+          <!--左侧导航开始-->
+            <div class="col-xs-2 bg-blue">
+                <br/>
+                <div class="panel-group sidebar-menu" id="accordion" aria-multiselectable="true">
+                    <div class="panel panel-default menu-first ">
+                        <!--<a href="index.html" data-toggle="collapse" data-parent="#accordion"  aria-expanded="true"
+                           aria-controls="collapseOne">--><!--实现主页下可以折叠-->
+                        <a href="{% url 'user:index' %}">
+                            <i class="icon-home icon-large"></i> 主页
+                        </a>
+                    </div>
+                    <div class="panel panel-default menu-first menu-first-active">
+                        <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true"
+                           aria-controls="collapseOne">
+                            <i class="icon-user-md icon-large"></i> 绿缘论坛</a>
+                        </a>
+
+                        <div id="collapseOne" class="panel-collapse collapse in" >
+                            <ul class="nav nav-list menu-second">
+                              <li class=""><a href="{% url 'news:luntan' %}"><i class="icon-edit"></i>论坛</a></li>
+                               <li class="menu-second-selected"><a href="#"><i class="icon-edit"></i>发布帖子</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="panel panel-default menu-first">
+                        <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo"
+                           aria-expanded="false" aria-controls="collapseTwo">
+                            <i class="icon-book icon-large"></i> 大棚管理</a>
+                        </a>
+                        <div id="collapseTwo" class="panel-collapse collapse ">
+                            <ul class="nav nav-list menu-second">
+                                <li><a href="{% url 'datas:nature' %}"><i class="icon-user"></i> 环境监测</a></li>
+                                <li><a href="{% url 'control:statecontrol' %}"><i class="icon-undo"></i> 灌溉控制</a></li>
+                                <li><a href="{% url 'datas:history' %}"><i class="icon-trash"></i> 数据查询</a></li>
+                                <li><a href="{% url 'status:device' %}"><i class="icon-list"></i> 设备工况</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="panel panel-default menu-first">
+                        <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseThree"
+                           aria-expanded="false" aria-controls="collapseThree">
+                            <i class="icon-book icon-large"></i> 个人中心</a>
+                        </a>
+
+                        <div id="collapseThree" class="panel-collapse collapse">
+                            <ul class="nav nav-list menu-second">
+                                    <li><a href="{% url 'user:userinfo' %}"><i class="icon-user"></i> 基本资料</a></li>
+                                <li><a href="{% url 'user:password' %}"><i class="icon-edit"></i> 密码修改</a></li>
+                                <!--<li><a href="#"><i class="icon-trash"></i> 子选项3</a></li>
+                                <li><a href="#"><i class="icon-list"></i> 子选项4</a></li>-->
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--左侧导航结束-->
+            <!----------------------------------------------------------------------------------------------------->
+            <!--右侧内容开始-->
+            <div class="col-xs-10">
+                <br/>
+                <ol class="breadcrumb">
+                    <li><a href="index.html"><span class="glyphicon glyphicon-home"></span>&nbsp;主页</a></li>
+                    <li class="active">绿缘论坛-发布帖子</li>
+                </ol>
+             <form method="post" action="write" style="margin-top: 20px;margin-left: 10%" enctype="multipart/form-data">
+                 {% csrf_token %}
+                {% comment %} 内容开始{% endcomment %}
+                 <p>
+                  标题：<input type="text" class="form-control" placeholder="标题" name="title" style="margin-top: 5px">
+                 </p>
+                 <p>
+                    简介：<input type="text" class="form-control" placeholder="简介" name="info" style="margin-top: 5px;">
+                 </p>
+                 <p>
+                     上传图片：支持jpg，png，gif，且大小不超过2M<input type="file" id="file" name="img" style="margin-top: 5px">
+                 </p>
+                 <!-- 结束-->
+                 <label style="margin-top: 10px">
+                     <textarea name="content"></textarea>
+                 </label>
+                 <br>
+                 <input type="submit" value="发布" class="btn btn-default" >
+             </form>
+
+            </div>
+            <!--右侧内容结束-->
+        </div>
+    </div>
+</section>
+{% endblock body-content %}
+
+
+
