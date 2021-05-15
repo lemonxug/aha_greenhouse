@@ -1,0 +1,188 @@
+{% extends 'base_content.html' %}
+{% load static%}
+{% block top-css %}
+    <link rel="stylesheet" href="{% static 'css/monitor-1.css' %}"/>
+<style>
+    .customers {
+      font-family: Arial, Helvetica, sans-serif;
+      border-collapse: collapse;
+      width: 100%;
+    }
+
+    .customers td, .customers th {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align:center;
+    }
+
+    .customers tr:nth-child(even){background-color: #f2f2f2;}
+
+     tr:hover {background-color: #ddd;}
+
+     th {
+      padding-top: 12px;
+      padding-bottom: 12px;
+      text-align: left;
+      background-color: #0f9960cc;
+      color: white;
+    }
+</style>
+{% endblock top-css %}
+
+<!--右侧内容开始-->
+{% block right-content %}
+<div class="col-xs-10">
+    <br/>
+    <ol class="breadcrumb">
+        <li><a href="{% url 'index' %}"><span class="glyphicon glyphicon-home"></span>&nbsp;主页</a></li>
+        <li class="active">大棚管理 - 设备控制 </li>
+    </ol>
+    <div class="xuanze" style="margin-left: 15%;margin-top: 50px">
+    <div class="select_place">
+        <h4>设备列表：</h4>
+                <table class="customers" >
+                    <tr>
+                        <th>大棚名称</th>
+                        <th>设备名称</th>
+                        <th>设备位置</th>
+                        <th>启停</th>
+                        <th>控制方式</th>
+                        <th>详情</th>
+                        <th>修改</th>
+
+                    </tr>
+                    {% for d in devices %}
+                    <tr>
+                        <td><a href="{% url 'monitor:index' %}{{device.id}}">{{ d.device.greenhouse.name }}</td>
+                        <td>{{ d.device.name }}</td>
+                        <td>{{ d.device.location }}</td>
+                        <td class="peopel_control">
+                            <input class="button-img" id="{{ d.device_id }}" type="image" src="{% static 'img/kaiguan3.png' %}">
+                        </td>
+                        <td>{{ control_dict|get_item:d.control_type }}</td>
+                        <td><a href="#" data-toggle="modal" data-target="#controlHistory">控制历史</a>
+                        </td>
+                        <td><a href="#" data-toggle="modal" data-target="#createPlan">修改控制信息</a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan = "7">No date yet.</td></tr>
+                    {% endfor %}
+                </table>
+        <div class="modal fade" id="controlHistory" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="controlHistoryLabel">控制历史</h4>
+                    </div>
+                    <div class="modal-body">
+                        <table class="customers" >
+                    <tr>
+                        <th>设备名称</th>
+                        <th>指令</th>
+                        <th>操作类型</th>
+                        <th>操作时间</th>
+                    </tr>
+                    {% for h in history %}
+                    <tr>
+                        <td>{{ h.device.name }}</td>
+                        <td>{{ h.order.name }}</td>
+                        <td>{{ control_dict|get_item:h.control_type }}</td>
+                        <td>{{ h.create_time }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan = "7">No date yet.</td></tr>
+                    {% endfor %}
+                </table>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="createPlan" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+            <form method="post" action="create_plan/">
+                {% csrf_token %}
+                <input type="text" name="device_id" value="37" display="none">
+                <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="createPlanLabel">修改控制信息</h4>
+                    </div>
+                    <div class="modal-body">
+                        <input type="radio" name="controltype" value="2" checked="checked">阈值
+                        <input type="radio" name="controltype" value="3">预约
+                        <input type="radio" name="controltype" value="4">定时
+                        <input type="radio" name="controltype" value="1">手动
+                        <hr>
+                        <div class="threshold">
+                            <h4>阈值计划</h4>
+                            计划名称：<input type="text" name="threshold-name" value="温度控制计划1"><br>
+                            指标：<select name="indicator">
+                            {% for i in indicator_list %}
+                                <option value="{{ i.id }}">{{ i.name }}</option>
+                            {% endfor %}
+                                </select><br>
+                            阈值：<input type="text" name="threshold" value="25.5"><br>
+                            指令：<select name="order">
+                                    <option value="启动">启动</option>
+                                    <option value="停止">停止</option>
+                                    <option value="关闭">关闭</option>
+                                </select>
+                        </div>
+                        <hr>
+                        <div class="book">
+                            <h4>预约计划</h4>
+                            计划名称：<input type="text" name="book-name" value="预约控制计划1"><br>
+                            开始时间：<input type="text" name="book-start" value="2021/05/07 10:00:00"><br>
+                            结束时间：<input type="text" name="book-stop" value="2021/05/07 10:30:00"><br>
+                            指令：<select name="order">
+                                    <option value="">启动</option>
+                                    <option value="">停止</option>
+                                    <option value="">关闭</option>
+                                </select>
+                        </div>
+                        <hr>
+                        <div class="timer">
+                            <h4>定时计划</h4>
+                            计划名称：<input type="text" name="timer-name" value="定时控制计划1"><br>
+                            启动时间：<input type="text" name="timer-start" value="2021/05/07 10:00:00"><br>
+                            结束时间：<input type="text" name="timer-stop" value="2021/05/07 10:30:00"><br>
+                            重复周期：<input type="text" name="timer-repeat" value="每天"><br>
+                            指令：<select name="order">
+                                    <option value="">启动</option>
+                                    <option value="">停止</option>
+                                    <option value="">关闭</option>
+                                </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                        <button type="submit" class="btn btn-primary" >保存</button>
+                    </div>
+                </div>
+            </div>
+                </form>
+        </div>
+    </div>
+        </select>
+    </div>
+    <div>
+</div>
+{% endblock right-content %}
+<!--右侧内容结束-->
+
+{% block bottom-script %}
+<script>
+
+    $('.button-img').click(function () {
+        alert('修改成功') }
+        );
+
+</script>
+{% endblock bottom-script %}

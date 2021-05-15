@@ -1,0 +1,96 @@
+创建项目
+django-admin startproject aha_greenhouse
+python manage.py startapp monitor
+
+创建管理员
+python manage.py createsuperuser
+python manage.py changepassword username # 修改用户密码
+
+配置setting.py
+1.设置域名访问权限
+2.设置TEMPLATES里的'DIRS'，添加模板目录templates的路径
+3.设置网站数据库类型
+4.在INSTALLED_APPS添加APP应用名称
+5.修改项目语言和时区
+
+创建数据库模型
+models.py
+
+模型同步
+python manage.py makemigrations
+python manage.py migrate
+
+使用Admin管理后台管理
+
+启动服务
+python manage.py runserver
+
+录入数据
+
+备份数据库
+sqlite3 db.sqlite3 ".dump monitor%" > backup.sql
+sqlite3 db.sqlite3 < cache/backup.sql
+
+配置值url
+urls.py
+path('monitor/', include('monitor.urls'),),  # 环境监测
+monitor/urls.py
+from monitor.views import IndexView, ApiView
+path('', IndexView.as_view(), name='index'),   # 监控页面
+monitor/templates/test.html
+
+编写views
+1.函数
+2.基于类的view，通用视图
+
+模板
+Django模板存放方式有两种方法：
+1、在项目根下创建templates目录，然后把模板存入在templates目录里，多个APP的话，就直接在templates目录下建立与APP名相同名称的目录即可。Django会自动查找到，这种方法简单、直观，适合个人或小项目。
+2、各个APP下单独建立一个templates目录，然后再建立一个与项目名相同的的目录，把模板放到对应的目录里。这样的方法适合大项目多人协作，每个人只负责各自的APP项目的时候。多样式多站点(域名)的情况也适用，不同的APP用不同的模板样式，不同的域名。
+两种方法，模板调用方法一样：
+return render(request, 'app/index.html', context)
+
+模板语言
+字段
+{{ object.headline }}
+{{ now|date }}
+
+列表
+{% for article in object_list %}
+    <li>{{ article.pub_date|date }} - {{ article.headline }}</li>
+{% empty %}
+    <li>No articles yet.</li>
+{% endfor %}
+
+字典
+{% for key,values in mydict.items  %}
+<li>{{ key }}：{{ values }}</li>
+{% endfor %}
+
+if
+{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+
+模板包含
+{% include 'head.html' %}
+<div>中部</div>
+{% include 'footer.html' %}
+
+模板继承
+{% extends "base.html" %}
+
+block
+{% block content %}
+<div>中部</div>
+{% endblock %}
+
+载入静态文件
+{% load static %}
+
+
+from django.db.models import Avg, Max, Min, Count, Sum
+res = models.Publish.objects.values("name").annotate(in_price = Min("book__price"))
+print(res)
+
+
+关于Django中JsonResponse返回中文字典编码错误的解决方案
+JsonResponse(data, json_dumps_params={'ensure_ascii':False})

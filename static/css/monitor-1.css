@@ -1,0 +1,48 @@
+.contents{
+    margin-left: 10%;
+    margin-top: 30px;
+
+}
+.first, .second, .third, .fourth {
+    display: block;
+}
+
+.first {
+    float: left;
+    margin-left: 25px;
+}
+
+.second {
+    float: left;
+    margin-left: 50px;
+}
+
+.third {
+    float: left;
+    margin-left: 50px;
+}
+
+.fourth {
+    float: left;
+    margin-left: 50px;
+}
+
+.wen_du {
+    color: lightskyblue;
+    font-size: 30px;
+}
+
+.shi_du {
+    color: lightskyblue;
+    font-size: 30px;
+}
+
+.tan_du {
+    color: lightskyblue;
+    font-size: 30px;
+}
+
+.shui_fen {
+    color: lightskyblue;
+    font-size: 30px;
+}

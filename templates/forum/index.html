@@ -1,0 +1,38 @@
+{% extends 'base_content.html' %}
+{% load static %}
+{% block top-css %}
+
+{% endblock top-css %}
+
+{% block right-content %}
+<div class="col-xs-10">
+    <br/>
+    <ol class="breadcrumb">
+        <li><a href="index.html"><span class="glyphicon glyphicon-home"></span>&nbsp;主页</a></li>
+        <li class="active">智慧大棚论坛-热门内容</li>
+    </ol>
+    <div class=" center swiper" >
+        <div class="swiper-container">
+            <div class="swiper-wrapper">
+                <div class="col-md-6">
+                    <div id="featured" class="raxus-slider" data-autoplay="3000" data-keypress="false"
+                         data-thumbnail="bottom">
+                        <ul class="slider-relative" id="relative">
+                            {% for b in banner %}
+                            <li class="slide fix-width">
+                                <a href="{{ b.link_url }}" title="{{ b.text_info }}">
+                                <img src="{% url 'index' %}media/{{ b.img }}" srcset="{% url 'index' %}media/{{ b.img }}" alt="{{ b.text_info }}"
+                                             class="wp-post-image" width="370" height="290"/></a>
+                                    <span class="text ani-left"><strong>{{ b.text_info }}</strong></span>
+                                </li>
+                            {% endfor %}
+                    </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock right-content %}
+
+{% block bottom-script %}
+
+{% endblock bottom-script %}

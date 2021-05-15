@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>温室环境监测</title>
+</head>
+<body>
+<h1>温室环境监测</h1>
+    <div>
+    <h4>大棚列表：</h4>
+        <ul>
+            {% for h in house_list %}
+            <li>{{ h.name }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    <div>
+    <h4>设备列表：</h4>
+        <ul>
+            {% for h in device_list %}
+            <li>{{ h.name }}</li>
+            <li>{{ h.location }}</li>
+            <li>{{ h.status }}</li>
+            <li>{{ h.category }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+</body>
+</html>

@@ -1,0 +1,75 @@
+{% extends 'base_content.html' %}
+{% load static%}
+{% block top-css %}
+    <link rel="stylesheet" href="{% static 'css/monitor-1.css' %}"/>
+<style>
+    #customers {
+      font-family: Arial, Helvetica, sans-serif;
+      border-collapse: collapse;
+      width: 100%;
+    }
+
+    #customers td, #customers th {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align:center;
+    }
+
+    #customers tr:nth-child(even){background-color: #f2f2f2;}
+
+     tr:hover {background-color: #ddd;}
+
+     th {
+      padding-top: 12px;
+      padding-bottom: 12px;
+      text-align: left;
+      background-color: #0f9960cc;
+      color: white;
+    }
+</style>
+{% endblock top-css %}
+
+<!--右侧内容开始-->
+{% block right-content %}
+<div class="col-xs-10">
+    <br/>
+    <ol class="breadcrumb">
+        <li><a href="{% url 'index' %}"><span class="glyphicon glyphicon-home"></span>&nbsp;主页</a></li>
+        <li class="active">大棚管理 - 环境监测 - {{ house.name }}</li>
+    </ol>
+    <div class="xuanze" style="margin-left: 15%;margin-top: 50px">
+    <div class="select_place">
+        <h4>实时数据：</h4>
+                <table id="customers" >
+                    <tr>
+                        <th>大棚名称</th>
+                        <th>设备名称</th>
+                        <th>设备位置</th>
+                        <th>环境指标</th>
+                        <th>监测值</th>
+                        <th>记录时间</th>
+                    </tr>
+                    {% for d in data_list %}
+                    <tr>
+                        <td>{{ d.device.greenhouse.name }}</td>
+                        <td>{{ d.device.name }}</td>
+                        <td>{{ d.device.location }}</td>
+                        <td>{{ d.data.indicator }}</td>
+                        <td>{{ d.data.value }}</td>
+                        <td>{{ d.data.create_time }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan = "7">No date yet.</td></tr>
+                    {% endfor %}
+                </table>
+        </div>
+        </select>
+    </div>
+    <div>
+</div>
+{% endblock right-content %}
+<!--右侧内容结束-->
+
+{% block bottom-script %}
+
+{% endblock bottom-script %}

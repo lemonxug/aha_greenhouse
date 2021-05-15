@@ -26,7 +26,7 @@ body{
 }
 
 .bg-blue {
-    background-color: rgba(91,192,222,0.3);
+    background-color: #0f996087;
 }
 
 .tab li a {
@@ -57,11 +57,11 @@ footer{
     line-height: 50px;
 }
 /***************************************/
-/*×ó²à²Ëµ¥*/
+/*ï¿½ï¿½ï¿½Ëµï¿½*/
 .sidebar-menu{
     border-right: 1px solid #c4c8cb;
 }
-/*Ò»¼¶²Ëµ¥*/
+/*Ò»ï¿½ï¿½ï¿½Ëµï¿½*/
 .menu-first{
     /*height:45px;*/
     line-height:45px;
@@ -69,7 +69,7 @@ footer{
     border-top: 1px solid #efefef;
     border-bottom: 1px solid #e1e1e1;
     padding: 0;
-    font-size: 14px;
+    font-size: 15px;
     font-weight: normal;
     text-align: center;
 }
@@ -81,36 +81,36 @@ footer{
 }
 .menu-first a:hover{
     text-decoration: none;
-    color:#337AB7;
+    color:#f5f8fa;
 }
-/*Ò»¼¶²Ëµ¥Êó±ê»®¹ý×´Ì¬*/
-.menu-first:hover,.menu-first-active{
+/*Ò»ï¿½ï¿½ï¿½Ëµï¿½ï¿½ï¿½ê»®ï¿½ï¿½×´Ì¬*/
+.menu-first:hover{
     text-decoration: none;
-    background-color: #d6d4d5;
+    background-color: #0f996087;
     color: #999;
-    border-top: 1px solid #b7b7b7;
-    border-bottom: 1px solid #acacac;
+    border-top: 1px solid #0f996087;
+    border-bottom: 1px solid #0f996087;
 }
-/*¶þ¼¶²Ëµ¥*/
+/*ï¿½ï¿½ï¿½ï¿½ï¿½Ëµï¿½*/
 .menu-second li a{
     background-color: #f6f6f6;
     height:31px;
     line-height:31px;
     border-top: 1px solid #efefef;
     border-bottom: 1px solid #efefef;
-    font-size: 12px;
+    font-size: 14px;
     text-align:center;
 }
-/*¶þ¼¶²Ëµ¥Êó±ê»®¹ýÑùÊ½*/
+/*ï¿½ï¿½ï¿½ï¿½ï¿½Ëµï¿½ï¿½ï¿½ê»®ï¿½ï¿½ï¿½ï¿½Ê½*/
 .menu-second li a:hover {
     text-decoration: none;
-    background-color: #66c3ec;
-    border-top: 1px solid #83ceed;
-    border-bottom: 1px solid #83ceed;
-    border-right: 3px solid  #f8881c;
-    border-left: 3px solid #66c3ec;
+    background-color: #0f996087;
+    border-top: 1px solid #0f996087;
+    border-bottom: 1px solid #0f996087;
+    border-right: 3px solid  #0f996087;
+    border-left: 3px solid #0f996087;
 }
-/*¶þ¼¶²Ëµ¥Ñ¡ÖÐ×´Ì¬*/
+/*ï¿½ï¿½ï¿½ï¿½ï¿½Ëµï¿½Ñ¡ï¿½ï¿½×´Ì¬*/
 .menu-second .menu-second-selected {
     background-color: #66c3ec;
     height:31px;
@@ -125,7 +125,7 @@ footer{
     background-color: #66c3ec;
 }
 
-/*¸²¸ÇbootstrapµÄÑùÊ½*/
+/*ï¿½ï¿½ï¿½ï¿½bootstrapï¿½ï¿½ï¿½ï¿½Ê½*/
 .panel-group .panel + .panel {
  margin-top: 0px;
 }
@@ -141,7 +141,7 @@ footer{
     color:#999;
 }
 /***********************************************/
-/*p1.html ±í¸ñ*/
+/*p1.html ï¿½ï¿½ï¿½*/
 .line{
     width: 200px;
     margin-right: 10px;
@@ -149,9 +149,10 @@ footer{
 .table tbody tr td{
     vertical-align: middle;
 }
+/*
 .modal .modal-body{
     padding: 20px 110px 0;
-}
+}*/
 .modal .modal-body ul{
     list-style-type: none;
 }
@@ -175,7 +176,7 @@ footer{
     width: 260px;;
 }
 /*****************************************************/
-/*p2.html Í¼±í*/
+/*p2.html Í¼ï¿½ï¿½*/
 .canvas{
     float:left;
     margin:50px 0 50px 60px;

@@ -1,33 +1,8 @@
-altgraph==0.16.1
-asgiref==3.3.4
+asgiref
 certifi==2020.12.5
-cycler==0.10.0
-Django==3.2
-django-redis==4.12.1
-django-tinymce==3.3.0
-future==0.18.2
-kiwisolver==1.2.0
-macholib @ file:///home/linux1/recipes/ci/macholib_1611055836792/work
-matplotlib==3.0.3
-mkl-fft==1.3.0
-mkl-random @ file:///C:/ci/mkl_random_1618854593605/work
-mkl-service==2.3.0
-mysqlclient==1.4.4
-numpy @ file:///C:/ci/numpy_and_numpy_base_1618497408168/work
-olefile==0.46
-pefile==2019.4.18
-Pillow==6.2.0
-pycrypto==2.6.1
-PyInstaller==3.5
-pyparsing @ file:///home/linux1/recipes/ci/pyparsing_1610983426697/work
-pyserial @ file:///tmp/build/80754af9/pyserial_1594419199743/work
-python-dateutil @ file:///home/ktietz/src/ci/python-dateutil_1611928101742/work
-pytz==2019.2
-pywin32==227
-pywin32-ctypes @ file:///C:/ci/pywin32-ctypes_1594392691209/work
-redis==3.5.3
-six @ file:///C:/ci/six_1605201719739/work
-sqlparse==0.3.0
-tornado @ file:///C:/ci/tornado_1606935947090/work
-typing-extensions==3.7.4.3
+Django
+Pillow==8.2.0
+psycopg2
+pytz
+sqlparse
 wincertstore==0.2
