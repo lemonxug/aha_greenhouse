@@ -1,7 +1,8 @@
 from django.shortcuts import render, get_object_or_404, get_list_or_404, redirect, reverse
 from apps.monitor.models import GreenHouse, DeviceCategory, Device, EnvironmentIndicator, EnvironmentData
 from django.http import JsonResponse
-
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from datetime import datetime
 
 # Create your views here.
 def global_variable(request):
@@ -71,3 +72,43 @@ def get_data(request, house_id):
     return JsonResponse({'data': data_list}, json_dumps_params={'ensure_ascii': False})
 
 
+def query_environmentdata(request):
+    page = request.GET.get('page')
+    house = request.GET.get('house')
+    device = request.GET.get('device')
+    indicator = request.GET.get('indicator')
+    time1 = request.GET.get('time1')
+    time2 = request.GET.get('time2')
+
+    if time1:
+        time1 = datetime.strptime(time1, '%Y-%m-%d')
+    if time2:
+        time2 = datetime.strptime(time2, '%Y-%m-%d')
+
+    size = 15
+    data_list = EnvironmentData.objects.all()
+    if not page:
+        page = 1
+    if house:
+        house_device = Device.objects.filter(greenhouse=house, category=1)
+        data_list = EnvironmentData.objects.filter(device__in=house_device)
+    if device:
+        data_list = EnvironmentData.objects.filter(device=device)
+    if indicator:
+        data_list = EnvironmentData.objects.filter(indicator=indicator)
+    if time1:
+        if time2:
+            data_list = EnvironmentData.objects.filter(create_time__gt=time1, create_time__lt=time2)
+        else:
+            data_list = EnvironmentData.objects.filter(create_time__gt=time1)
+    else:
+        if time2:
+            data_list = EnvironmentData.objects.filter(create_time__lt=time2)
+    paginator = Paginator(data_list, size)
+    try:
+        data_list = paginator.page(page)  # 获取当前页码的记录
+    except PageNotAnInteger:
+        data_list = paginator.page(1)  # 如果用户输入的页码不是整数时,显示第1页的内容
+    except EmptyPage:
+        data_list = paginator.page(paginator.num_pages)  # 如果用户输入的页数不在系统的页码列表中时,显示最后一页的内容
+    return render(request, 'monitor/environment_data.html', locals())

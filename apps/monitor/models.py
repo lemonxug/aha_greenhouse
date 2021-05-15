@@ -68,6 +68,7 @@ class EnvironmentData(models.Model):
     class Meta:
         verbose_name = '环境数据'
         verbose_name_plural = verbose_name
+        ordering = ['-create_time']
 
     def __str__(self):
         return str(self.indicator) + '-' + str(self.value)

@@ -26,6 +26,45 @@
       background-color: #0f9960cc;
       color: white;
     }
+        #toggle-button{ display: none; }
+        .button-label{
+            position: relative;
+            display: inline-block;
+            width: 70px;
+            height: 20px;
+            background-color: #ccc;
+            box-shadow: #ccc 0px 0px 0px 2px;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+        .circle{
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background-color: #fff;
+        }
+        .button-label .text {
+            line-height: 20px;
+            font-size: 12px;
+            text-shadow: 0 0 2px #ddd;
+        }
+
+        .on { color: #fff; display: none; text-indent: 0px;}
+        .off { color: #fff; display: inline-block; text-indent: 16px;}
+        .button-label .circle{
+            left: 0;
+            transition: all 0.3s;
+        }
+        #toggle-button:checked + label.button-label .circle{
+            left: 50px;
+        }
+        #toggle-button:checked + label.button-label .on{ display: inline-block; }
+        #toggle-button:checked + label.button-label .off{ display: none; }
+        #toggle-button:checked + label.button-label{
+            background-color: #0f9960;
 </style>
 {% endblock top-css %}
 
@@ -45,10 +84,10 @@
                         <th>大棚名称</th>
                         <th>设备名称</th>
                         <th>设备位置</th>
-                        <th>启停</th>
+                        <th>手动启停</th>
                         <th>控制方式</th>
-                        <th>详情</th>
-                        <th>修改</th>
+                        <th>控制历史</th>
+                        <th>控制修改</th>
 
                     </tr>
                     {% for d in devices %}
@@ -57,7 +96,15 @@
                         <td>{{ d.device.name }}</td>
                         <td>{{ d.device.location }}</td>
                         <td class="peopel_control">
-                            <input class="button-img" id="{{ d.device_id }}" type="image" src="{% static 'img/kaiguan3.png' %}">
+<!--                            <input class="button-img" id="{{ d.device_id }}" type="image" src="{% static 'img/kaiguan3.png' %}">-->
+                        <div class="toggle-button-wrapper">
+                        <input type="checkbox" id="toggle-button" name="switch" >
+                        <label for="toggle-button" class="button-label">
+                            <span class="circle"></span>
+                            <span class="text on">ON</span>
+                            <span class="text off">OFF</span>
+                        </label>
+                        </div>
                         </td>
                         <td>{{ control_dict|get_item:d.control_type }}</td>
                         <td><a href="#" data-toggle="modal" data-target="#controlHistory">控制历史</a>
@@ -180,8 +227,17 @@
 {% block bottom-script %}
 <script>
 
-    $('.button-img').click(function () {
-        alert('修改成功') }
+    $('#toggle-button').click(function () {
+        alert('修改成功');
+        var device=37;
+        var order='启动';
+        var type=1;
+
+        $.POST("{% url 'control:change_status' %}",{
+        device:37,
+        order:"启动",
+        type:1
+        })
         );
 
 </script>

@@ -1,4 +1,4 @@
-
+# 常用命令
 conda create -n django
 conda activate django
 pip install django
@@ -80,8 +80,51 @@ decimal_places：小数位数。如：要保存最大值为 999 (小数点后保
 <29>raw()         接收一个原始的SQL查询
 
 # ORM QuerySet查询
+from django.db.models import Avg, Max, Min, Count, Sum
+res = models.Publish.objects.values("name").annotate(in_price = Min("book__price"))
+print(res)
+模板
+Django模板存放方式有两种方法：
+1、在项目根下创建templates目录，然后把模板存入在templates目录里，多个APP的话，就直接在templates目录下建立与APP名相同名称的目录即可。Django会自动查找到，这种方法简单、直观，适合个人或小项目。
+2、各个APP下单独建立一个templates目录，然后再建立一个与项目名相同的的目录，把模板放到对应的目录里。这样的方法适合大项目多人协作，每个人只负责各自的APP项目的时候。多样式多站点(域名)的情况也适用，不同的APP用不同的模板样式，不同的域名。
+两种方法，模板调用方法一样：
+return render(request, 'app/index.html', context)
 
+# 模板语言
+字段
+{{ object.headline }}
+{{ now|date }}
 
-# 为 URL 名称添加命名空间
+列表
+{% for article in object_list %}
+    <li>{{ article.pub_date|date }} - {{ article.headline }}</li>
+{% empty %}
+    <li>No articles yet.</li>
+{% endfor %}
 
+字典
+{% for key,values in mydict.items  %}
+<li>{{ key }}：{{ values }}</li>
+{% endfor %}
+
+if
+{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+
+模板包含
+{% include 'head.html' %}
+<div>中部</div>
+{% include 'footer.html' %}
+
+模板继承
+{% extends "base.html" %}
+
+block
+{% block content %}
+<div>中部</div>
+{% endblock %}
+
+载入静态文件
+{% load static %}
+
+为 URL 名称添加命名空间
 <li><a href="{% url 'polls:detail' question.id %}">{{ question.question_text }}</a></li>

@@ -1,0 +1,157 @@
+{% extends 'base_content.html' %}
+{% load static%}
+{% block top-css %}
+    <link rel="stylesheet" href="{% static 'css/monitor-1.css' %}"/>
+<style>
+    #customers {
+      font-family: Arial, Helvetica, sans-serif;
+      border-collapse: collapse;
+      width: 100%;
+    }
+
+    #customers td, #customers th {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align:center;
+    }
+
+    #customers tr:nth-child(even){background-color: #f2f2f2;}
+
+     tr:hover {background-color: #ddd;}
+
+     th {
+      padding-top: 12px;
+      padding-bottom: 12px;
+      text-align: left;
+      background-color: #0f9960cc;
+      color: white;
+    }
+
+    /*分页*/
+.pagination { margin: 0; padding: 20px; text-align: center; font-size: 12px; display: block; }
+.pagination ul { display: inline-block;  *display: inline;
+ *zoom: 1;
+margin-left: 0; margin-bottom: 0; padding: 0 }
+.pagination ul > li { display: inline }
+.pagination ul > li > a, .pagination ul > li > span { margin: 0 2px; float: left; padding: 5px 12px; background-color: #ddd; color: #666; border-radius: 2px; opacity: .88 }
+.pagination ul > li > a:hover, .pagination ul > li > a:focus { color: #fff; background-color: #d9534f; }
+.pagination ul > .active > a, .pagination ul > .active > span { background-color: #0f9960; ; color: #fff }
+.pagination ul > .active > a, .pagination ul > .active > span { cursor: default }
+.pagination ul > li > span, .pagination ul > .disabled > span, .pagination ul > .disabled > a, .pagination ul > .disabled > a:hover, .pagination ul > .disabled > a:focus { color: #999999; background-color: transparent; cursor: default }
+    /*过滤器*/
+.myform { margin: 0; padding: 5px; text-align: left; font-size: 16px; display: block; }
+.myfilter {width: 200px;  height: 30px; display: inline-block;  *display: inline;}
+.myfilter1 {width: 200px;  height: 30px; display: inline-block;  *display: inline;}
+.myform  h5 {font-size: 16px;}
+.myform  select {width: 150px;  height: 20px;}
+</style>
+{% endblock top-css %}
+
+<!--右侧内容开始-->
+{% block right-content %}
+<div class="col-xs-10">
+    <br/>
+    <ol class="breadcrumb">
+        <li><a href="{% url 'index' %}"><span class="glyphicon glyphicon-home"></span>&nbsp;主页</a></li>
+        <li class="active">大棚管理 - 环境数据查询</li>
+    </ol>
+    <div class="xuanze" style="margin-left: 15%;margin-top: 5px">
+    <div class="select_place">
+        <form class="myform" method="get" action="">
+            <div class="myfilter">
+            <h5>大棚名称：</h5>
+            <select name="house">
+                <option value="" selected> ----- </option>
+            {% for i in house_list %}
+                <option value="{{ i.id }}">{{ i.name }}</option>
+            {% endfor %}
+            </select></div>
+            <div class="myfilter">
+            <h5>设备名称：</h5>
+            <select class="myfilter" name="device">
+                <option value="" selected> ----- </option>
+            {% for i in device_list %}
+                <option value="{{ i.id }}">{{ i.name }}</option>
+            {% endfor %}
+            </select></div>
+            <div class="myfilter">
+            <h5>指标名称：</h5>
+            <select class="myfilter" name="indicator">
+                <option value="" selected> ----- </option>
+            {% for i in indicator_list %}
+                <option value="{{ i.id }}">{{ i.name }}</option>
+                {% endfor %}</select>
+            </div>
+            <br>
+            <div class="myfilter1">
+            <h5>开始日期：</h5>
+            <input type="date" class="myfilter" name="time1">
+            </div>
+            <div class="myfilter1">
+            <h5>结束日期：</h5>
+            <input type="date" class="myfilter" name="time2">
+            </div>
+            <input type="submit" value="查询" class="btn btn-primary">
+        </form>
+        <h4>环境数据：</h4>
+                <table id="customers" >
+                    <tr>
+                        <th>大棚名称</th>
+                        <th>设备名称</th>
+                        <th>设备位置</th>
+                        <th>指标名</th>
+                        <th>监测值</th>
+                        <th>记录时间</th>
+                    </tr>
+                    {% for d in data_list %}
+                    <tr>
+                        <td>{{ d.device.greenhouse.name }}</td>
+                        <td>{{ d.device.name }}</td>
+                        <td>{{ d.device.location }}</td>
+                        <td>{{ d.indicator.name }}</td>
+                        <td>{{ d.value }}</td>
+                        <td>{{ d.create_time }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan = "7">No date yet.</td></tr>
+                    {% endfor %}
+                </table>
+        </div>
+<div class="pagination">
+    <ul>
+        {% if data_list.has_previous %}
+        <li class="prev-page"><a href="?page={{ list.previous_page_number }}">上一页</a></li>
+        {% else %}
+         <li class="prev-page"></li>
+        {% endif %}
+
+
+            {% for num in data_list.paginator.page_range %}
+                {% if num %}
+                    {% ifequal num data_list.number %}
+                        <li class="active"><span>{{ num }}</span></li>
+                    {% else %}
+                        <li><a href="?page={{ num }}">{{ num }}</a></li>
+                    {% endifequal %}
+                {% else %}
+                    <li class="disabled"><span>...</span></li>
+                {% endif %}
+            {% endfor %}
+
+
+            {% if data_list.has_next %}
+                <li class="next-page"><a href="?page={{ list.next_page_number }}">下一页</a></li>
+            {% else %}
+                <li class="prev-page"></li>
+            {% endif %}
+    </ul>
+</div>
+    </div>
+    <div>
+</div>
+{% endblock right-content %}
+<!--右侧内容结束-->
+
+{% block bottom-script %}
+
+{% endblock bottom-script %}
