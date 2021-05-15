@@ -72,7 +72,7 @@
                         <div id="collapseOne" class="panel-collapse  ">
                             <ul class="nav nav-list menu-second">
                                 <li><a href="{% url 'forum:index' %}"><i class="icon-edit"></i>论坛首页</a></li>
-                                <li><a href="write_message.html"><i class="icon-edit"></i>发布帖子</a></li>
+<!--                                <li><a href="write_message.html"><i class="icon-edit"></i>发布帖子</a></li>-->
                             </ul>
                         </div>
                     </div>
@@ -84,9 +84,11 @@
 
                         <div id="collapseTwo" class="panel-collapse ">
                             <ul class="nav nav-list menu-second">
-                                <li><a href="{% url 'monitor:index' %}"><i class="icon-user"></i> 环境监测</a></li>
+                                <li><a href="{% url 'monitor:index' %}"><i class="icon-star"></i> 环境监测</a></li>
                                 <li><a href="{% url 'control:device_control' %}"><i class="icon-undo"></i> 设备控制</a></li>
                                 <li><a href="{% url 'monitor:environment_data' %}"><i class="icon-glass"></i> 环境数据查询</a></li>
+                                <li><a href="{% url 'monitor:analysis' %}"><i class="icon-search"></i> 数据分析</a></li>
+
                             </ul>
                         </div>
                     </div>
@@ -99,6 +101,7 @@
 
                         <div id="collapseThree" class="panel-collapse ">
                             <ul class="nav nav-list menu-second">
+                                <li><a href="{% url 'user:index' %}"><i class="icon-inbox"></i> 个人首页</a></li>
                                 <li><a href="{% url 'user:userinfo' %}"><i class="icon-user"></i> 基本资料</a></li>
                                 <li><a href="{% url 'user:reset_password' %}"><i class="icon-edit"></i> 密码修改</a></li>
                             </ul>

@@ -6,6 +6,9 @@ from .models import Article, Tag, Tui, Comment, Category, Banner
 
 #首页
 def index(request):
+    allcategory = Category.objects.all()
+    remen = Article.objects.filter(tui__id=2)[:6]
+    tags = Tag.objects.all()
     banner = Banner.objects.filter(is_active=True)[0:4]
     tui = Article.objects.filter(tui__id=1)[:3]
     allarticle = Article.objects.all().order_by('-id')[0:10]
@@ -21,7 +24,7 @@ def show(request, sid):
     next_blog = Article.objects.filter(created_time__lt=show.created_time,category=show.category.id).last()
     show.views = show.views + 1
     show.save()
-    return render(request, 'show.html', locals())
+    return render(request, 'forum/show.html', locals())
 
 
 def new_article(requests):

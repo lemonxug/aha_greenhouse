@@ -20,9 +20,9 @@ from apps.forum.views import index, show, new_article
 
 app_name = 'forum'
 urlpatterns = [
-    path('index/', index, name='index'),
-    # path('show-<int:sid>/', show, name='show'),
-    path('new_article/', new_article, name='new_article'),
+    path('', index, name='index'),
+    path('show-<int:sid>.html/', show, name='show'),
+    # path('new_article/', new_article, name='new_article'),
 ]
 
 

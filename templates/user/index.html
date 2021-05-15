@@ -1,18 +1,78 @@
 {% extends 'base_content.html' %}
 {% load static %}
+{% block top-css %}
+    <link rel="stylesheet" href="{% static 'css/monitor-1.css' %}"/>
+<style>
+    #customers {
+      font-family: Arial, Helvetica, sans-serif;
+      border-collapse: collapse;
+      width: 90%;
+    }
 
+    #customers td, #customers th {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align:center;
+    }
+
+    #customers tr:nth-child(even){background-color: #f2f2f2;}
+
+     tr:hover {background-color: #ddd;}
+
+     th {
+      padding-top: 12px;
+      padding-bottom: 12px;
+      text-align: left;
+      background-color: #0f9960cc;
+      color: white;
+    }
+</style>
+{% endblock top-css %}
 {% block right-content %}
             <div class="col-xs-10">
                 <br/>
-                <ol class="breadcrumb">
-                    <li class="active"><span class="glyphicon glyphicon-home"></span>&nbsp;主页</li>
-                </ol>
+                    <ol class="breadcrumb">
+        <li><a href="{% url 'index' %}"><span class="glyphicon glyphicon-home"></span>&nbsp;主页</a></li>
+        <li class="active">个人中心 - 个人首页</li>
+    </ol>
                 <!--
                 <h1 class="text-center text-black"> AHA智慧大棚管理系统</h1>
                 -->
                 <div style="margin-left: 10%">
-                  <iframe name="weather_inc" src="http://i.tianqi.com/index.php?c=code&id=13" width="650" height="221" frameborder="0" marginwidth="0" marginheight="0" scrolling="no"></iframe>
+                  <iframe name="weather_inc" src="http://i.tianqi.com/index.php?c=code&id=13" width="878" height="221" frameborder="0" marginwidth="0" marginheight="0" scrolling="no"></iframe>
                 </div>
+
+    <div class="xuanze" style="margin-left: 10%;margin-top: 50px">
+    <div class="select_place">
+        <h4>大棚列表：</h4>
+                <table id="customers" >
+                    <tr>
+                        <th>大棚名称</th>
+                        <th>温度</th>
+                        <th>湿度</th>
+                        <th>CO2</th>
+                        <th>光照度</th>
+                        <th>土壤温度</th>
+                        <th>土壤水分</th>
+                    </tr>
+                    {% for house in data_index %}
+                    <tr>
+                        <td><a href="{% url 'monitor:index' %}{{house.id}}">{{ house.name }}</td>
+                        <td>{{ house.wendu.value }}</td>
+                        <td>{{ house.shidu.value }}</td>
+                        <td>{{ house.co2.value }}</td>
+                        <td>{{ house.shine.value }}</td>
+                        <td>{{ house.twendu.value }}</td>
+                        <td>{{ house.tshuifen.value }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan = "7">No date yet.</td></tr>
+                    {% endfor %}
+                </table>
+        </div>
+    </div>
+    <div>
+</div>
             </div>
             <!--右侧内容结束-->
 {% endblock right-content %}

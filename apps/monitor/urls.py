@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include, re_path
-from apps.monitor.views import index, detail, get_data, query_environmentdata
+from apps.monitor.views import index, detail, get_data, query_environmentdata, add_data, analysis
 
 
 app_name = 'monitor'
@@ -24,7 +24,8 @@ urlpatterns = [
     path('<int:house_id>/', detail, name='detail'),  # 大棚详情页
     path('<int:house_id>/get_data/', get_data, name='get_data'),   # 获取实时数据
     path('query/environment_data/', query_environmentdata, name='environment_data'),  # 查询环境数据
-
+    path('add_data/', add_data, name='add_data'),  # 数据接口
+    path('analysis/', analysis, name='analysis'),  # 数据接口
 ]
 
 

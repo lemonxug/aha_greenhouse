@@ -62,7 +62,7 @@ class EnvironmentData(models.Model):
     indicator = models.ForeignKey(EnvironmentIndicator, on_delete=models.DO_NOTHING, verbose_name='环境指标', blank=True, null=True)
     value = models.DecimalField(max_digits=5, decimal_places=2, verbose_name='监测值')
     device = models.ForeignKey(Device, on_delete=models.DO_NOTHING, verbose_name='设备名称', blank=True, null=True)
-    create_time = models.DateTimeField('记录时间')
+    create_time = models.DateTimeField('记录时间', auto_now_add=True)
 
 
     class Meta:

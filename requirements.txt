@@ -1,8 +1,12 @@
 asgiref
 certifi==2020.12.5
+chardet==4.0.0
 Django
+idna==2.10
 Pillow==8.2.0
 psycopg2
-pytz
+pytz @
+requests==2.25.1
 sqlparse
+urllib3==1.26.4
 wincertstore==0.2

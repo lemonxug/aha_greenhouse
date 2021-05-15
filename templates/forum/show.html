@@ -1,0 +1,89 @@
+﻿{% extends 'base_content.html' %}
+{% load static %}
+{% block top-css %}
+<style>
+</style>
+<link rel='stylesheet' id='raxus-css' href='{% static "css/raxus.css" %}' type='text/css' media='all'/>
+
+{% endblock top-css %}
+
+{% block right-content %}
+<div class="col-xs-10" >
+    <br/>
+    <ol class="breadcrumb" style="margin: 0 0 0 100px;">
+        <li><a href="{% url 'index' %}"><span class="glyphicon glyphicon-home"></span>&nbsp;主页</a></li>
+        <li class="active">智慧大棚论坛 - 论坛首页</li>
+    </ol>
+        <div style="margin-left: 10%">
+    <div id="main-container" class="container clearfix" style="margin: 0 0 0 0;padding: 0 0 10px 0;" >
+        <section class="post-left" style="margin: 0 0 0 0">
+            <div class="post-main clearfix" style="padding: 0 0 10px 0;">
+                <h1 class="post-title">{{ show.title }}</h1>
+                <div class="post-con clearfix">
+                    <div class="article-meta">
+                        <span class="item">分类：<a href="{% url 'index' %}list-{{ show.category.id }}.html" rel="category tag">{{ show.category.name }}</a></span>
+                        <span class="item">作者：{{ show.user }}</span>
+                        <span class="item">浏览：{{ show.views }}</span>
+                        <span class="item">{{ show.created_time }}</span>
+
+                    </div>
+                    <article class="article-content">
+                    {{ show.body|safe }}
+                    </article>
+
+                    <div class="post-tag"><span class="fa fa-tags" aria-hidden="true"></span>标签：
+                    {% for tag in show.tags.all %}
+                        <a href="{% url 'index' %}tag/{{ tag.name }}" rel="tag">{{ tag.name }}</a>
+                    {% endfor %}
+                    </div>
+                    <div>
+                        <div><b>上一篇：</b>
+                            {% if netx_blog %}
+                                <a href="show-{{ netx_blog.pk }}.html" class="article-tag">{{ netx_blog }}</a>
+                            {% else %}
+                                没有了
+                            {% endif %}
+                        </div>
+                        <div><b>下一篇：</b>
+                            {% if previous_blog %}
+                                <a href="show-{{ previous_blog.pk }}.html" class="article-tag">{{ previous_blog }}</a>
+                            {% else %}
+                                没有了
+                            {% endif %}
+                        </div>
+                    </div>
+</div>
+                </div>
+
+            </div>
+            <!-- /文章 -->
+
+
+            <div class="recommend  hidden-xs">
+
+                <div class="head clearfix"><span class="sp">您可能感兴趣的:</span></div>
+                <ul>
+                {% for h in hot %}
+                <li>
+                 <div class="pic">
+                   <a href="{% url 'index' %}show-{{ h.id }}.html" title="{{ h.title }}">
+                   <img src="{% url 'index' %}media/{{ h.img }}"
+                     srcset="{% url 'index' %}media/{{ h.img }}"
+                     alt="{{ h.title }}" class="wp-post-image" width="145" height="100"/></a>
+                  </div>
+                    <a class="descript " href="{% url 'index' %}show-{{ h.id }}.html" rel="bookmark"
+                           title="{{ h.title }}">{{ h.title }}</a>
+                </li>
+                {% endfor %}
+                </ul>
+            </div>
+
+
+        </section>
+{% endblock right-content %}
+
+{% block bottom-script %}
+<script type='text/javascript' src='{% static "js/raxus-slider.min.js" %}'></script>
+
+
+{% endblock bottom-script %}

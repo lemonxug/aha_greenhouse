@@ -3,6 +3,7 @@ from apps.user.models import UserAccount
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.mixins import LoginRequiredMixin    # 登录权限验证
 from django.contrib.auth.hashers import make_password    # 修改密码加密
+from apps.monitor.models import GreenHouse, EnvironmentData, Device
 # Create your views here.
 
 
@@ -47,7 +48,24 @@ def log_out(request):
 
 def index(request):
     if request.user.is_authenticated:
-        return render(request, 'user/index.html')
+        indicators = [1, 2, 3, 4, 5, 6]   # 首页展示的指标
+        house_list = GreenHouse.objects.all()
+        data_index = []
+        for house in house_list:
+            house_device = Device.objects.filter(greenhouse=house.id)
+            data = {
+                'id': house.id,
+                'name': house.name,
+                'wendu': EnvironmentData.objects.filter(device__in=house_device, indicator_id=1).last(),
+                'shidu': EnvironmentData.objects.filter(device__in=house_device, indicator_id=2).last(),
+                'co2': EnvironmentData.objects.filter(device__in=house_device, indicator_id=3).last(),
+                'shine': EnvironmentData.objects.filter(device__in=house_device, indicator_id=4).last(),
+                'twendu': EnvironmentData.objects.filter(device__in=house_device, indicator_id=5).last(),
+                'tshuifen': EnvironmentData.objects.filter(device__in=house_device, indicator_id=6).last(),
+            }
+            data_index.append(data)
+        return render(request, 'user/index.html', locals())
+        # return render(request, 'user/index.html')
     else:
         return redirect(reverse('user:login'))
 

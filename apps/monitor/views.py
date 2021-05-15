@@ -13,6 +13,22 @@ def global_variable(request):
     return locals()
 
 
+from django.views.decorators.csrf import csrf_exempt
+@csrf_exempt
+def add_data(request):
+    if request.POST:
+        try:
+            device_id = request.POST.get('device_id')
+            indicator_id = request.POST.get('indicator_id')
+            value = request.POST.get('value')
+            data = EnvironmentData(device_id=device_id, indicator_id=indicator_id, value=value)
+            data.save()
+            return JsonResponse({'status': '1'}, json_dumps_params={'ensure_ascii': False})
+        except Exception as e:
+            return JsonResponse({'status': '0'}, json_dumps_params={'ensure_ascii': False})
+    return JsonResponse({'status': '0'}, json_dumps_params={'ensure_ascii': False})
+
+
 def index(request):
     if request.user.is_authenticated:
         indicators = [1, 2, 3, 4, 5, 6]   # 首页展示的指标
@@ -23,12 +39,12 @@ def index(request):
             data = {
                 'id': house.id,
                 'name': house.name,
-                'wendu': EnvironmentData.objects.filter(device__in=house_device, indicator_id=1).last(),
-                'shidu': EnvironmentData.objects.filter(device__in=house_device, indicator_id=2).last(),
-                'co2': EnvironmentData.objects.filter(device__in=house_device, indicator_id=3).last(),
-                'shine': EnvironmentData.objects.filter(device__in=house_device, indicator_id=4).last(),
-                'twendu': EnvironmentData.objects.filter(device__in=house_device, indicator_id=5).last(),
-                'tshuifen': EnvironmentData.objects.filter(device__in=house_device, indicator_id=6).last(),
+                'wendu': EnvironmentData.objects.filter(device__in=house_device, indicator_id=1).first(),
+                'shidu': EnvironmentData.objects.filter(device__in=house_device, indicator_id=2).first(),
+                'co2': EnvironmentData.objects.filter(device__in=house_device, indicator_id=3).first(),
+                'shine': EnvironmentData.objects.filter(device__in=house_device, indicator_id=4).first(),
+                'twendu': EnvironmentData.objects.filter(device__in=house_device, indicator_id=5).first(),
+                'tshuifen': EnvironmentData.objects.filter(device__in=house_device, indicator_id=6).first(),
             }
             data_index.append(data)
         return render(request, 'monitor/index.html', locals())
@@ -44,7 +60,7 @@ def detail(request, house_id):
     for device in device_house:
         # 获取每传感器最新记录的值
         # data_device = device.environmentdata_set.order_by('create_time').last()
-        data_device = device.environmentdata_set.last()
+        data_device = device.environmentdata_set.first()
         data = {
             'device': device,
             'data': data_device
@@ -112,3 +128,7 @@ def query_environmentdata(request):
     except EmptyPage:
         data_list = paginator.page(paginator.num_pages)  # 如果用户输入的页数不在系统的页码列表中时,显示最后一页的内容
     return render(request, 'monitor/environment_data.html', locals())
+
+
+def analysis(request):
+    redirect(reverse('monitor:environment_data'))
