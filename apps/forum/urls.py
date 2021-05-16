@@ -15,13 +15,16 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include, re_path
-from apps.forum.views import index, show, new_article
+from apps.forum.views import index, show, tag, list, new_article
 
 
 app_name = 'forum'
 urlpatterns = [
     path('', index, name='index'),
     path('show-<int:sid>.html/', show, name='show'),
+    path('tag/<tag>', tag, name='tags'),  # 标签列表页
+    path('list-<int:lid>.html', list, name='list'),  # 列表页
+
     # path('new_article/', new_article, name='new_article'),
 ]
 

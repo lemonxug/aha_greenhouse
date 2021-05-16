@@ -79,8 +79,8 @@ class ControlHistory(models.Model):
         verbose_name = '设备命令表'  # 可读的名字
         verbose_name_plural = verbose_name  # 可读的名字的复数
 
-    def __str__(self):
-        return self.control_type
+    # def __str__(self):
+    #     return self.control_type
 
 
 

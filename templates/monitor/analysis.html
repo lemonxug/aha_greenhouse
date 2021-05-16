@@ -1,0 +1,265 @@
+{% extends 'base_content.html' %}
+{% load static%}
+{% block top-css %}
+    <link rel="stylesheet" href="{% static 'css/monitor-1.css' %}"/>
+<style>
+.myform { margin: 0; padding: 5px; text-align: left; font-size: 16px; display: block; }
+.myfilter {width: 200px;  height: 30px; display: inline-block;  *display: inline;}
+.myfilter1 {width: 200px;  height: 30px; display: inline-block;  *display: inline;}
+.myform  h5 {font-size: 16px;}
+</style>
+{% endblock top-css %}
+<!--右侧内容开始-->
+{% block right-content %}
+<div class="col-xs-10">
+    <br/>
+    <ol class="breadcrumb" style="margin: 0 0 0 100px;">
+        <li><a href="{% url 'index' %}"><span class="glyphicon glyphicon-home"></span>&nbsp;主页</a></li>
+        <li class="active">大棚管理 - 数据分析</li>
+    </ol>
+    <div class="xuanze" style="margin-left: 10%;margin-top: 10px">
+        <div class="myform">
+                <div class="myfilter">
+                    <h5>土壤湿度：</h5>
+                    <select id="gshidu_device" style="font-size: 16px;width: 150px;  height: 20px;">
+                    {% for i in gshidu_device %}
+                        <option value="{{ i.id }}">{{ i.name }}</option>
+                    {% endfor %}
+                    </select>
+                </div>
+                <div class="myfilter">
+                    <h5>土壤温度：</h5>
+                    <select id="gwendu_device" style="font-size: 16px;width: 150px;  height: 20px;">
+                    {% for i in gwendu_device %}
+                        <option value="{{ i.id }}">{{ i.name }}</option>
+                    {% endfor %}
+                    </select>
+                </div>
+                <div class="myfilter">
+                    <h5>空气湿度：</h5>
+                    <select id="ashidu_device" style="font-size: 16px;width: 150px;  height: 20px;">
+                    {% for i in ashidu_device %}
+                        <option value="{{ i.id }}">{{ i.name }}</option>
+                    {% endfor %}
+                    </select>
+                </div>
+                <div class="myfilter">
+                    <h5>空气温度：</h5>
+                    <select id="awendu_device" style="font-size: 16px;width: 150px;  height: 20px;">
+                    {% for i in awendu_device %}
+                        <option value="{{ i.id }}">{{ i.name }}</option>
+                    {% endfor %}
+                    </select>
+                </div>
+                <input value="查询" type="button" class="btn btn-primary" onclick="lineChart()">
+        </div>
+    </div>
+                {% csrf_token %}
+
+                {% for i in datas %}
+                <p>{{ i.create_time }}</p>
+                {% endfor %}
+
+                <div class="chart" style="margin-left: 10%; margin-top: 10px" datas="{{ datas }}">
+                    <div class="canvas"  style="width: 80%;height: 30%">
+                        <h4 class="text-primary">土壤湿度</h4>
+                        <canvas id="canvas1" ></canvas>
+                    </div>
+                    <div class="canvas" style="width: 80%;height: 30%">
+                        <h4 class="text-primary">土壤温度</h4>
+                        <canvas id="canvas4" ></canvas>
+                    </div>
+                    <div class="canvas" style="width: 80%;height: 30%">
+                        <h4 class="text-primary">温室内温度</h4>
+                        <canvas id="canvas2" style="width: 99%;height: 100%"></canvas>
+                    </div>
+                    <div class="canvas" style="width: 80%;height: 30%">
+                        <h4 class="text-primary">温室内湿度</h4>
+                        <canvas id="canvas3" style="width: 99%;height: 100%"></canvas>
+
+                    </div>
+                </div>
+
+
+</div>
+{% endblock right-content %}
+<!--右侧内容结束-->
+
+{% block bottom-script %}
+    <script src="{% static 'js/Chart.js' %}"></script>
+<script>
+    {#/*Chart的数据*/28条数据#}
+    function lineChart() {
+
+        gshidu_device = $('#gshidu_device').val();
+        gwendu_device = $('#gwendu_device').val();
+        ashidu_device = $('#ashidu_device').val();
+        awendu_device = $('#awendu_device').val();
+        timelist = [];
+        shidulist = [];
+        csrf = $('input[name="csrfmiddlewaretoken"]').val();
+
+        params = {
+            'gshidu_device': gshidu_device,
+            'gwendu_device': gwendu_device,
+            'ashidu_device': ashidu_device,
+            'awendu_device': awendu_device,
+             'csrfmiddlewaretoken': csrf
+
+        };
+
+         $.ajaxSettings.async = false;
+
+        $.post('/monitor/analysis/', params, function (data) {
+            ground_wendu_time = data.ground_wendu_time;
+            ground_wendu_data = data.ground_wendu_data;
+            ground_shidu_time = data.ground_shidu_time;
+            ground_shidu_data = data.ground_shidu_data;
+            air_wendu_time = data.air_wendu_time;
+            air_wendu_data = data.air_wendu_data;
+            air_shidu_time = data.air_shidu_time;
+            air_shidu_data = data.air_shidu_data;
+        });
+        $.ajaxSettings.async = true;
+        var ctx1 = document.getElementById('canvas1').getContext("2d");
+        ctx1.height = 500;
+        var data1 = {
+            labels: ground_shidu_time,
+            datasets: [{
+                label: "土壤湿度",
+                fillColor: "rgba(200,200,200,0.2)",
+                strokeColor: "rgba(200,200,200,1)",
+                pointColor: "rgba(200,200,200,1)",
+                pointStrokeColor: "#fff",
+                pointHighlightFill: "#fff",
+                pointHighlightStroke: "rgba(200,200,200,1)",
+                data: ground_shidu_data
+            }]
+        };
+
+        var salesVolumeChart1 = new Chart(ctx1).Line(data1,{
+            scaleOverride :true ,   //是否用硬编码重写y轴网格线
+            scaleSteps : 15,        //y轴刻度的个数
+            scaleStepWidth : 3,   //y轴每个刻度的宽度
+            scaleStartValue : 0   //y轴的起始值
+        });
+         var ctx2 = document.getElementById('canvas2').getContext("2d");
+        ctx2.height = 500;
+        var data2 = {
+            labels: air_wendu_time,
+
+            datasets: [{
+                label: "空气温度",
+                fillColor: "rgba(200,200,200,0.2)",
+                strokeColor: "rgba(200,200,200,1)",
+                pointColor: "rgba(200,200,200,1)",
+                pointStrokeColor: "#fff",
+                pointHighlightFill: "#fff",
+                pointHighlightStroke: "rgba(200,200,200,1)",
+
+                data: air_wendu_data
+            }]
+        };
+        var salesVolumeChart2 = new Chart(ctx2).Line(data2,{
+            scaleOverride :true ,   //是否用硬编码重写y轴网格线
+            scaleSteps : 15,        //y轴刻度的个数
+            scaleStepWidth : 3,   //y轴每个刻度的宽度
+            scaleStartValue : 0  //y轴的起始值
+        });
+         var ctx3 = document.getElementById('canvas3').getContext("2d");
+        ctx3.height = 500;
+        var data3 = {
+            labels: air_shidu_time,
+            datasets: [{
+                label: "空气湿度",
+                fillColor: "rgba(200,200,200,0.2)",
+                strokeColor: "rgba(200,200,200,1)",
+                pointColor: "rgba(200,200,200,1)",
+                pointStrokeColor: "#fff",
+                pointHighlightFill: "#fff",
+                pointHighlightStroke: "rgba(200,200,200,1)",
+                data: air_shidu_data
+            }]
+        };
+        var salesVolumeChart3 = new Chart(ctx3).Line(data3,{
+            scaleOverride :true ,   //是否用硬编码重写y轴网格线
+            scaleSteps : 15,        //y轴刻度的个数
+            scaleStepWidth : 8,   //y轴每个刻度的宽度
+            scaleStartValue : 0   //y轴的起始值
+
+        });
+         var ctx4 = document.getElementById('canvas4').getContext("2d");
+        ctx4.height = 500;
+        var data4 = {
+            labels: ground_wendu_time,
+            datasets: [{
+                label: "土壤温度",
+                fillColor: "rgba(200,200,200,0.2)",
+                strokeColor: "rgba(200,200,200,1)",
+                pointColor: "rgba(200,200,200,1)",
+                pointStrokeColor: "#fff",
+                pointHighlightFill: "#fff",
+                pointHighlightStroke: "rgba(200,200,200,1)",
+                data: ground_wendu_data
+            }]
+        };
+        var salesVolumeChart4 = new Chart(ctx4).Line(data4,{
+            scaleOverride :true ,   //是否用硬编码重写y轴网格线
+            scaleSteps : 15,        //y轴刻度的个数
+            scaleStepWidth : 8,   //y轴每个刻度的宽度
+            scaleStartValue : 0   //y轴的起始值
+
+        });
+    }
+
+    // 启动
+    setTimeout(function() {
+        // 避免IE7-8 调用getContext报错，使用setTimeout
+        lineChart()
+
+    }, 0)
+    if (/Mobile/i.test(navigator.userAgent)) {
+        //针对手机，性能做一些降级，看起来就不会那么卡了
+        Chart.defaults.global.animationSteps = Chart.defaults.global.animationSteps / 6
+        Chart.defaults.global.animationEasing = "linear"
+    }
+
+</script>
+
+    <script>{% comment %}数据导出{% endcomment %}
+
+        window.onload = function () {
+            var btn = document.getElementById('btn');
+            btn.onclick = function () {
+                places1 = $('.place').val()
+                depths2 = $('.depth').val()
+                start_time = $('.bday1').val()
+                stop_time = $('.bday2').val()
+
+                csrf = $('input[name="csrfmiddlewaretoken"]').val()
+                params = {
+                    'place1': places1,
+                    'depth1': depths2,
+                    'csrfmiddlewaretoken': csrf,
+                    'start_time':start_time,
+                    'stop_time':stop_time
+                }
+                {#alert(start_time)#}
+                $.ajaxSettings.async = false
+                $.post('/datas/to_excel',params,function (data) {
+                    //BOM的方式解决EXCEL乱码问题
+                    var BOM = '\uFEFF';
+                    csvString = BOM + data;
+                    var a = document.createElement('a');
+                    a.href = 'data:attachment/csv,' + encodeURI(csvString);
+                    a.target = '_blank';
+                    a.download = '数据.csv';
+                    document.body.appendChild(a); // Firefox 中必须这么写，不然不会起效果
+                    a.click();
+                    document.body.removeChild(a);
+                })
+                $.ajaxSettings.async = true
+            };
+        };
+    </script>
+{% endblock bottom-script %}

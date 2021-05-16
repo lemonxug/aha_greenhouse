@@ -76,7 +76,7 @@ decimal_places：小数位数。如：要保存最大值为 999 (小数点后保
 <25>defer()        不加载指定字段
 <26>only()         只加载指定的字段
 <27>using()        选择数据库
-<28>select_for_update()  锁住选择的对象，直到事务结束。
+<28>select_for_update()  锁住选择的对象，直到事务结束。only
 <29>raw()         接收一个原始的SQL查询
 
 # ORM QuerySet查询

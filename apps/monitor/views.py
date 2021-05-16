@@ -53,21 +53,24 @@ def index(request):
 
 
 def detail(request, house_id):
-    house = get_object_or_404(GreenHouse, id=house_id)
-    # device_house = get_list_or_404(Device, greenhouse=house_id)
-    device_house = Device.objects.filter(greenhouse=house_id, category=1)
-    data_list = []
-    for device in device_house:
-        # 获取每传感器最新记录的值
-        # data_device = device.environmentdata_set.order_by('create_time').last()
-        data_device = device.environmentdata_set.first()
-        data = {
-            'device': device,
-            'data': data_device
-        }
-        data_list.append(data)
-    # data_device = EnvironmentData.objects.filter(device__in=device_house)
-    return render(request, 'monitor/detail.html', locals())
+    if request.user.is_authenticated:
+        house = get_object_or_404(GreenHouse, id=house_id)
+        # device_house = get_list_or_404(Device, greenhouse=house_id)
+        device_house = Device.objects.filter(greenhouse=house_id, category=1)
+        data_list = []
+        for device in device_house:
+            # 获取每传感器最新记录的值
+            # data_device = device.environmentdata_set.order_by('create_time').last()
+            data_device = device.environmentdata_set.first()
+            data = {
+                'device': device,
+                'data': data_device
+            }
+            data_list.append(data)
+        # data_device = EnvironmentData.objects.filter(device__in=device_house)
+        return render(request, 'monitor/detail.html', locals())
+    else:
+        return redirect(reverse('user:login'))
 
 
 def get_data(request, house_id):
@@ -89,46 +92,84 @@ def get_data(request, house_id):
 
 
 def query_environmentdata(request):
-    page = request.GET.get('page')
-    house = request.GET.get('house')
-    device = request.GET.get('device')
-    indicator = request.GET.get('indicator')
-    time1 = request.GET.get('time1')
-    time2 = request.GET.get('time2')
+    if request.user.is_authenticated:
+        page = request.GET.get('page')
+        house = request.GET.get('house')
+        device = request.GET.get('device')
+        indicator = request.GET.get('indicator')
+        time1 = request.GET.get('time1')
+        time2 = request.GET.get('time2')
 
-    if time1:
-        time1 = datetime.strptime(time1, '%Y-%m-%d')
-    if time2:
-        time2 = datetime.strptime(time2, '%Y-%m-%d')
-
-    size = 15
-    data_list = EnvironmentData.objects.all()
-    if not page:
-        page = 1
-    if house:
-        house_device = Device.objects.filter(greenhouse=house, category=1)
-        data_list = EnvironmentData.objects.filter(device__in=house_device)
-    if device:
-        data_list = EnvironmentData.objects.filter(device=device)
-    if indicator:
-        data_list = EnvironmentData.objects.filter(indicator=indicator)
-    if time1:
+        if time1:
+            time1 = datetime.strptime(time1, '%Y-%m-%d')
         if time2:
-            data_list = EnvironmentData.objects.filter(create_time__gt=time1, create_time__lt=time2)
+            time2 = datetime.strptime(time2, '%Y-%m-%d')
+
+        size = 15
+        data_list = EnvironmentData.objects.all()
+        if not page:
+            page = 1
+        if house:
+            house_device = Device.objects.filter(greenhouse=house, category=1)
+            data_list = EnvironmentData.objects.filter(device__in=house_device)
+        if device:
+            data_list = EnvironmentData.objects.filter(device=device)
+        if indicator:
+            data_list = EnvironmentData.objects.filter(indicator=indicator)
+        if time1:
+            if time2:
+                data_list = EnvironmentData.objects.filter(create_time__gt=time1, create_time__lt=time2)
+            else:
+                data_list = EnvironmentData.objects.filter(create_time__gt=time1)
         else:
-            data_list = EnvironmentData.objects.filter(create_time__gt=time1)
+            if time2:
+                data_list = EnvironmentData.objects.filter(create_time__lt=time2)
+        paginator = Paginator(data_list, size)
+        try:
+            data_list = paginator.page(page)  # 获取当前页码的记录
+        except PageNotAnInteger:
+            data_list = paginator.page(1)  # 如果用户输入的页码不是整数时,显示第1页的内容
+        except EmptyPage:
+            data_list = paginator.page(paginator.num_pages)  # 如果用户输入的页数不在系统的页码列表中时,显示最后一页的内容
+        return render(request, 'monitor/environment_data.html', locals())
     else:
-        if time2:
-            data_list = EnvironmentData.objects.filter(create_time__lt=time2)
-    paginator = Paginator(data_list, size)
-    try:
-        data_list = paginator.page(page)  # 获取当前页码的记录
-    except PageNotAnInteger:
-        data_list = paginator.page(1)  # 如果用户输入的页码不是整数时,显示第1页的内容
-    except EmptyPage:
-        data_list = paginator.page(paginator.num_pages)  # 如果用户输入的页数不在系统的页码列表中时,显示最后一页的内容
-    return render(request, 'monitor/environment_data.html', locals())
-
+        return redirect(reverse('user:login'))
 
 def analysis(request):
-    redirect(reverse('monitor:environment_data'))
+    def check(arg, defaut):
+        if arg:
+            return arg
+        return defaut
+    if request.user.is_authenticated:
+        if request.POST:
+            gshidu_device = check(request.POST.get('gshidu_device'), 7)
+            gwendu_device = check(request.POST.get('gwendu_device'), 31)
+            ashidu_device = check(request.POST.get('ashidu_device'), 1)
+            awendu_device = check(request.POST.get('awendu_device'), 3)
+            try:
+                ground_wendu = EnvironmentData.objects.filter(indicator_id=5, device_id=gwendu_device)
+                ground_shidu = EnvironmentData.objects.filter(indicator_id=6, device_id=gshidu_device)
+                air_shidu = EnvironmentData.objects.filter(indicator_id=2, device_id=ashidu_device)
+                air_wendu = EnvironmentData.objects.filter(indicator_id=1, device_id=awendu_device)
+            except EnvironmentData.DoesNotExist:
+                return JsonResponse({'err':'出错了'})
+            ground_wendu_time = [i.create_time.strftime("%H:%M:%S") for i in ground_wendu[:27]]
+            ground_wendu_data = [i.value for i in ground_wendu[:22]]
+            ground_shidu_time = [i.create_time.strftime("%H:%M:%S") for i in ground_shidu[:27]]
+            ground_shidu_data = [i.value for i in ground_shidu[:22]]
+            air_wendu_time = [i.create_time.strftime("%H:%M:%S") for i in air_wendu[:27]]
+            air_wendu_data = [i.value for i in air_wendu[:22]]
+            air_shidu_time = [i.create_time.strftime("%H:%M:%S") for i in air_shidu[:27]]
+            air_shidu_data = [i.value for i in air_shidu[:22]]
+            return JsonResponse({'ground_wendu_time': ground_wendu_time, 'ground_wendu_data': ground_wendu_data,
+                                 'ground_shidu_time': ground_shidu_time, 'ground_shidu_data': ground_shidu_data,
+                                 'air_wendu_time':air_wendu_time, 'air_wendu_data':air_wendu_data,
+                                 'air_shidu_time':air_shidu_time, 'air_shidu_data':air_shidu_data,
+                                 })
+        ashidu_device = Device.objects.filter(id__in= EnvironmentData.objects.filter(indicator_id=2).values('device_id').distinct())
+        awendu_device = Device.objects.filter(id__in= EnvironmentData.objects.filter(indicator_id=1).values('device_id').distinct())
+        gshidu_device = Device.objects.filter(id__in= EnvironmentData.objects.filter(indicator_id=6).values('device_id').distinct())
+        gwendu_device = Device.objects.filter(id__in= EnvironmentData.objects.filter(indicator_id=5).values('device_id').distinct())
+        return render(request, 'monitor/analysis.html', locals())
+    else:
+        return redirect(reverse('user:login'))
