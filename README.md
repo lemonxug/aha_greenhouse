@@ -2,7 +2,27 @@
 Web高级开发课程小组项目，**AHA智慧大棚管理系统**
 ## 环境配置
 本站点基于python3.9, Django3.2开发
-
+### 1.下载安装Miniconda
+Miniconda 是一个 Anaconda 的轻量级替代，默认只包含了 python 和 conda，但是可以通过 pip 和 conda 来安装所需要的包。   
+Miniconda 安装包可以到 https://mirrors.tuna.tsinghua.edu.cn/anaconda/miniconda/ 下载。   
+通过修改用户目录下的 .condarc 文件更换包安装源，Windows 用户无法直接创建名为 .condarc 的文件，可先执行 conda config --set show_channel_urls yes 生成该文件之后再修改。   
+```
+channels:
+  - defaults
+show_channel_urls: true
+default_channels:
+  - https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main
+  - https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/r
+  - https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/msys2
+custom_channels:
+  conda-forge: https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud
+  msys2: https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud
+  bioconda: https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud
+  menpo: https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud
+  pytorch: https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud
+  simpleitk: https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud
+```
+### 2.配置项目环境
 ```
 # 下载项目文件到本地
 git clone https://github.com/lemonxug/aha_greenhouse.git
@@ -10,10 +30,14 @@ git clone https://github.com/lemonxug/aha_greenhouse.git
 # 使用conda创建虚拟环境
 conda create --name aha python=3.9 --file requirements.txt
 
+# 如果上述命令未成功创建虚拟环境，可以试用以命令先创建环境，再使用pip安装相关包，运行站点若提示缺少相关库，同样使用pip进行安装
+conda create --name aha python=3.9
+pip install -i https://pypi.tuna.tsinghua.edu.cn/simple django requests
+
 # 激活环境
 activate aha
 ```
-## 启动站点
+### 3.启动站点
 ```
 # 启动站点
 python manage.py runserver
@@ -22,8 +46,9 @@ python manage.py runserver
 后台地址：http://127.0.0.1:8000/admin    
 管理员账户：admin/admin   
 
-## 初始化觳觫库
-1. 使用MySQL数据库
+## 初始化数据库
+本项目使用的事sqlite数据库，如有需要可以更换为其他数据库
+### 1.使用MySQL数据库
 ```
 settings.py
 将以下配置
@@ -48,8 +73,8 @@ DATABASES = {
     }
 }
 ```
-2. 导入数据
-使用backup.sql导入数据
+### 2.导入数据
+更换数据库后可使用backup.sql导入测试数据
    
 ## Django开发常用命令
 ```
@@ -73,7 +98,7 @@ python manage.py shell # Django项目环境终端，
 
 python manage.py # 查看更多关于Django的命令在终端输入
 
-# sqlite3备份数据库
+# sqlite3数据库备份
 sqlite3 db.sqlite3 ".dump" > backup.sql   # 导出备份
 sqlite3 db.sqlite3 < cache/backup.sql     # 导入备份
 ```
