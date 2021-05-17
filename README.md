@@ -30,7 +30,8 @@ git clone https://github.com/lemonxug/aha_greenhouse.git
 # 使用conda创建虚拟环境
 conda create --name aha python=3.9 --file requirements.txt
 
-# 如果上述命令未成功创建虚拟环境，可以试用以命令先创建环境，再使用pip安装相关包，运行站点若提示缺少相关库，同样使用pip进行安装
+# 如果上述命令未成功创建虚拟环境，可以使用以下命令先创建环境，再使用pip安装相关包。
+# 若运行站点时提示缺少相关库，同样可以使用pip进行安装。
 conda create --name aha python=3.9
 pip install -i https://pypi.tuna.tsinghua.edu.cn/simple django requests
 
@@ -47,7 +48,7 @@ python manage.py runserver
 管理员账户：admin/admin   
 
 ## 初始化数据库
-本项目使用的事sqlite数据库，如有需要可以更换为其他数据库
+本项目使用的是sqlite数据库，如有需要可以更换为其他数据库。
 ### 1.使用MySQL数据库
 ```
 settings.py
@@ -74,7 +75,7 @@ DATABASES = {
 }
 ```
 ### 2.导入数据
-更换数据库后可使用backup.sql导入测试数据
+更换数据库后，可使用backup.sql导入测试数据
    
 ## Django开发常用命令
 ```
